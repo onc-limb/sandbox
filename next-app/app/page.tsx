@@ -1,7 +1,7 @@
 "use client";
 
-import Square from "@/components/square";
+import Board from "@/components/board";
 
 export default function Page() {
-  return <Square />;
+  return <Board />;
 }
