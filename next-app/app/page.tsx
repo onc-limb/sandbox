@@ -1,7 +1,7 @@
 "use client";
 
-import Board from "@/components/board";
+import Game from "@/components/board";
 
 export default function Page() {
-  return <Board />;
+  return <Game />;
 }

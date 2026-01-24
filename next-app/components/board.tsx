@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Square from "./square";
 
-export default function Board() {
+export function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
   const handleClick = (i: number) => {
@@ -66,4 +66,17 @@ function calculateWinner(squares: number[]) {
     }
   }
   return null;
+}
+
+export default function Game() {
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
 }
