@@ -1,13 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import Square from "./square";
 
-export function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
+function Square({
+  value,
+  onSquareClick,
+}: {
+  value: string | null;
+  onSquareClick: () => void;
+}) {
+  return (
+    <button className="square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
+}
+
+function Board({
+  xIsNext,
+  squares,
+  onPlay,
+}: {
+  xIsNext: boolean;
+  squares: (string | null)[];
+  onPlay: (squares: (string | null)[]) => void;
+}) {
   const handleClick = (i: number) => {
-    if (squares[i] || calculateWinner(squares)) {
+    if (calculateWinner(squares) || squares[i]) {
       return;
     }
     const nextSquares = squares.slice();
@@ -16,9 +35,9 @@ export function Board() {
     } else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   };
+
   const winner = calculateWinner(squares);
   let status: string;
   if (winner) {
@@ -48,7 +67,31 @@ export function Board() {
   );
 }
 
-function calculateWinner(squares: number[]) {
+export default function Game() {
+  const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState<(string | null)[][]>([
+    Array(9).fill(null),
+  ]);
+  const currentSquares = history[history.length - 1];
+
+  function handlePlay(nextSquares: (string | null)[]) {
+    setHistory([...history, nextSquares]);
+    setXIsNext(!xIsNext);
+  }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
+}
+
+function calculateWinner(squares: (string | null)[]) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -66,17 +109,4 @@ function calculateWinner(squares: number[]) {
     }
   }
   return null;
-}
-
-export default function Game() {
-  return (
-    <div className="game">
-      <div className="game-board">
-        <Board />
-      </div>
-      <div className="game-info">
-        <ol>{/*TODO*/}</ol>
-      </div>
-    </div>
-  );
 }
