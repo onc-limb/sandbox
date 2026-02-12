@@ -6,7 +6,7 @@ export default function Page() {
       <h1>React Tutorial</h1>
       <ul>
         <li>
-          <Link href="/quick">Quicl</Link>
+          <Link href="/quick">Quick</Link>
         </li>
         <li>
           <Link href="/tic-tac-toe">Tic-Tac-Toe</Link>
