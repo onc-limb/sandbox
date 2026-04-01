@@ -1,0 +1,8 @@
+.ol-soldiers/
+.env
+.venv/
+chroma_db/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.pdf
