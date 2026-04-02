@@ -1,11 +1,12 @@
 """3つのボット（RAG / 全文 / ハイブリッド）の回答を比較するスクリプト."""
 
 import logging
-import os
 import time
 
-import litellm
 from pathlib import Path
+
+from src.bot import UnifiedBot
+from src.config import get_config
 
 logging.basicConfig(
     level=logging.INFO,
@@ -44,13 +45,10 @@ def retry_on_unavailable(func, *args, **kwargs):
 
 
 def run_rag_bot(question: str) -> str:
-    """RAGBot で回答を取得する."""
+    """RAGモード（検索結果のみ）で回答を取得する."""
     logger.info("RAGBot: 開始")
-    from src.config import get_config
-    from src.rag_bot import RAGBot
-
     config = get_config(pdf_path=PDF_PATH)
-    bot = RAGBot(config)
+    bot = UnifiedBot(config, include_full_text=False)
     bot.build_index()
     answer = bot.answer(question)
     logger.info("RAGBot: 完了")
@@ -58,49 +56,23 @@ def run_rag_bot(question: str) -> str:
 
 
 def run_fulltext_bot(question: str) -> str:
-    """全文ボットで回答を取得する."""
+    """全文モード（RAG結果なし、全文のみ）で回答を取得する."""
     logger.info("FulltextBot: 開始")
-    from src.config import get_config
-    from src.fulltext_bot import _build_system_prompt, _load_full_text
-    from src.llm_client import chat
-
     config = get_config(pdf_path=PDF_PATH)
-    full_text = _load_full_text(config.pdf_path)
-    system_prompt = _build_system_prompt(full_text)
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": question},
-    ]
-    token_count = litellm.token_counter(model=config.llm_model_name, messages=messages)
-    logger.info("FulltextBot: 送信トークン数 = %d", token_count)
-    answer = chat(messages, config)
+    bot = UnifiedBot(config, include_full_text=True)
+    bot.build_index()
+    answer = bot.answer_fulltext_only(question)
     logger.info("FulltextBot: 完了")
     return answer
 
 
 def run_hybrid_bot(question: str) -> str:
-    """ハイブリッドボットで回答を取得する."""
+    """ハイブリッドモード（全文＋RAG検索結果）で回答を取得する."""
     logger.info("HybridBot: 開始")
-    from src.config import get_config
-    from src.embeddings import create_embeddings
-    from src.hybrid_bot import _build_full_text, _build_index, _build_prompt
-    from src.llm_client import chat
-    from src.pdf_loader import load_pdf
-    from src.vector_store import create_vector_store, similarity_search
-
     config = get_config(pdf_path=PDF_PATH)
-    pages = load_pdf(config.pdf_path)
-    full_text = _build_full_text(pages)
-    embeddings_model = create_embeddings(config)
-    collection = create_vector_store(config)
-    _build_index(config, embeddings_model, collection, pages)
-    results = similarity_search(collection, question, embeddings_model, k=4)
-    prompt = _build_prompt(full_text, results, question)
-    messages = [
-        {"role": "system", "content": "あなたはドキュメントに基づいて質問に回答するアシスタントです。"},
-        {"role": "user", "content": prompt},
-    ]
-    answer = chat(messages, config)
+    bot = UnifiedBot(config, include_full_text=True)
+    bot.build_index()
+    answer = bot.answer(question)
     logger.info("HybridBot: 完了")
     return answer
 
