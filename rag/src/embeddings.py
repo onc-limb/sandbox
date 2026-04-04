@@ -1,29 +1,17 @@
-"""Embedding model module.
-
-Uses sentence-transformers SentenceTransformer directly
-for BAAI/bge-m3 embeddings.
-"""
-
 from __future__ import annotations
 
-from sentence_transformers import SentenceTransformer
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-from src.config import Config, get_config
+from src.config import Config
 
 
-def create_embeddings(
-    config: Config | None = None,
-) -> SentenceTransformer:
-    """Create a SentenceTransformer instance for bge-m3.
+class Embedder:
+    def __init__(self, config: Config) -> None:
+        self._embed_model = HuggingFaceEmbedding(model_name=config.embedding_model_name)
 
-    Args:
-        config: Application config. Uses default if None.
+    @property
+    def model(self) -> HuggingFaceEmbedding:
+        return self._embed_model
 
-    Returns:
-        SentenceTransformer model that produces normalized embeddings
-        via its encode() method.
-    """
-    if config is None:
-        config = get_config()
-
-    return SentenceTransformer(config.embedding_model_name)
+    def encode(self, texts: list[str]) -> list[list[float]]:
+        return self._embed_model.get_text_embedding_batch(texts)

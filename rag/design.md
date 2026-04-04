@@ -9,13 +9,14 @@
 
 ## 技術スタック
 
-| コンポーネント | 選定 |
-|-------------|------|
-| 言語 | Python 3.11+ |
-| パッケージ管理 | uv |
-| LLM | Gemini 2.5 Flash（Google AI Studio 無料枠） |
+| コンポーネント | 選定                                                  |
+| -------------- | ----------------------------------------------------- |
+| 言語           | Python 3.11+                                          |
+| パッケージ管理 | uv                                                    |
+| LLM            | Gemini 2.5 Flash（Google AI Studio 無料枠）           |
 | 埋め込みモデル | `BAAI/bge-m3`（sentence-transformers でローカル実行） |
-| ベクトルDB | ChromaDB（ローカル永続化） |
+| ベクトルDB     | ChromaDB（ローカル永続化）                            |
+| フレームワーク | LlamaIndex                                            |
 
 ---
 
@@ -25,10 +26,10 @@
 
 Gemini 2.5 Flash はコンテキスト長が非常に大きいため、まず全文投入でベースラインを測る。
 
-| ドキュメント総量 | アプローチ |
-|---------------|----------|
-| 小〜中規模 | 全文システムプロンプト（シンプル・確実） |
-| 大規模 | RAG |
+| ドキュメント総量 | アプローチ                               |
+| ---------------- | ---------------------------------------- |
+| 小〜中規模       | 全文システムプロンプト（シンプル・確実） |
+| 大規模           | RAG                                      |
 
 > **検証戦略**: まず全文投入で実装 → ベースライン品質を確認 → 必要に応じて RAG に移行
 
@@ -63,10 +64,10 @@ docs/ の全ファイルを読み込み
 
 ## 図・表の扱い
 
-| ドキュメント形式 | 表 | 図 |
-|---------------|----|----|
-| Markdown (.md) | テキストとして扱える（Gemini は MD テーブルを解釈） | alt テキストのみ。画像自体は別途渡す必要あり |
-| PDF | `pymupdf` + `pdfplumber` でテキスト抽出。レイアウト再現は限定的 | 画像として抽出 → Gemini Vision で解釈可能 |
+| ドキュメント形式 | 表                                                              | 図                                           |
+| ---------------- | --------------------------------------------------------------- | -------------------------------------------- |
+| Markdown (.md)   | テキストとして扱える（Gemini は MD テーブルを解釈）             | alt テキストのみ。画像自体は別途渡す必要あり |
+| PDF              | `pymupdf` + `pdfplumber` でテキスト抽出。レイアウト再現は限定的 | 画像として抽出 → Gemini Vision で解釈可能    |
 
 ---
 
@@ -104,18 +105,18 @@ GOOGLE_API_KEY=AIza...
 
 ### 依存ライブラリ
 
-| ライブラリ | 用途 |
-|----------|------|
-| `google-genai` | Gemini 2.5 Flash API クライアント（新 SDK） |
-| `sentence-transformers` | bge-m3 ローカル実行 |
-| `chromadb` | ローカルベクトルDB |
-| `langchain` | RAGパイプライン構築 |
-| `langchain-google-genai` | LangChain × Gemini |
-| `langchain-community` | ChromaDB / ドキュメントローダー連携 |
-| `pymupdf` | PDF 読み込み（PDF ドキュメントの場合） |
-| `pdfplumber` | PDF の表抽出（必要な場合） |
-| `python-dotenv` | `.env` 読み込み |
-| `jupyter` | 検証・可視化 |
+| ライブラリ               | 用途                                        |
+| ------------------------ | ------------------------------------------- |
+| `google-genai`           | Gemini 2.5 Flash API クライアント（新 SDK） |
+| `sentence-transformers`  | bge-m3 ローカル実行                         |
+| `chromadb`               | ローカルベクトルDB                          |
+| `langchain`              | RAGパイプライン構築                         |
+| `langchain-google-genai` | LangChain × Gemini                          |
+| `langchain-community`    | ChromaDB / ドキュメントローダー連携         |
+| `pymupdf`                | PDF 読み込み（PDF ドキュメントの場合）      |
+| `pdfplumber`             | PDF の表抽出（必要な場合）                  |
+| `python-dotenv`          | `.env` 読み込み                             |
+| `jupyter`                | 検証・可視化                                |
 
 ```bash
 uv init --no-readme

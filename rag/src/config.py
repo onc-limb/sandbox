@@ -30,6 +30,8 @@ class Config:
     chroma_persist_dir: str = str(_PROJECT_ROOT / "chroma_db")
     chroma_collection_name: str = "rag_collection"
     pdf_path: str = str(_PROJECT_ROOT / "docs" / "oreilly-978-4-8144-0138-3e.pdf")
+    rerank_model_name: str = "BAAI/bge-reranker-v2-m3"
+    rerank_top_n: int = 4
 
     def __post_init__(self) -> None:
         if not self.gemini_api_key:
