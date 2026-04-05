@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import QueryBundle
-from llama_index.postprocessor.flag_embedding_reranker import FlagEmbeddingReranker
+from llama_index.postprocessor.sbert_rerank import SentenceTransformerRerank
 
 from src.document import Document
 
@@ -16,7 +16,7 @@ class Searcher:
         rerank_top_n: int = 4,
     ) -> None:
         self._retriever = index.as_retriever(similarity_top_k=rerank_top_n * 2)
-        self._reranker = FlagEmbeddingReranker(model=rerank_model, top_n=rerank_top_n)
+        self._reranker = SentenceTransformerRerank(model=rerank_model, top_n=rerank_top_n)
 
     def search(self, query: str, k: int = 4) -> list[Document]:
         nodes = self._retriever.retrieve(query)
