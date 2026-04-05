@@ -3,7 +3,7 @@ from src.document import Document
 from src.embeddings import Embedder
 from src.indexer import Indexer
 from src.searcher import Searcher
-from src.pdf_loader import PdfLoader
+from src.document_loader import DocumentLoader
 from src.chunker import Chunker
 from src.prompt_builder import PromptBuilder
 from src.llm_client import LlmClient
@@ -15,7 +15,7 @@ __all__ = [
     "Embedder",
     "Indexer",
     "Searcher",
-    "PdfLoader",
+    "DocumentLoader",
     "Chunker",
     "PromptBuilder",
     "LlmClient",

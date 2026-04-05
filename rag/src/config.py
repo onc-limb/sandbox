@@ -29,9 +29,12 @@ class Config:
     embedding_model_name: str = "BAAI/bge-m3"
     chroma_persist_dir: str = str(_PROJECT_ROOT / "chroma_db")
     chroma_collection_name: str = "rag_collection"
-    pdf_path: str = str(_PROJECT_ROOT / "docs" / "oreilly-978-4-8144-0138-3e.pdf")
+    doc_path: str = str(_PROJECT_ROOT / "docs" / "oreilly-978-4-8144-0138-3e.pdf")
     rerank_model_name: str = "BAAI/bge-reranker-v2-m3"
     rerank_top_n: int = 4
+    index_version: str = "default"
+    chunk_size: int = 1024
+    chunk_overlap: int = 200
 
     def __post_init__(self) -> None:
         if not self.gemini_api_key:
@@ -42,6 +45,8 @@ class Config:
                 "GEMINI_API_KEY is not set. "
                 "Set it in .env or as an environment variable."
             )
+        persist_dir = str(Path(self.chroma_persist_dir) / self.index_version)
+        object.__setattr__(self, "chroma_persist_dir", persist_dir)
 
 
 def get_config(**overrides: str) -> Config:

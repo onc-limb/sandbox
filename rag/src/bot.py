@@ -24,9 +24,9 @@ class UnifiedBot:
         self._llm_client = LlmClient(config)
 
     def build_index(self) -> None:
-        self._indexer.build_index(self._config.pdf_path)
+        self._indexer.build_index(self._config.doc_path)
         if self._include_full_text:
-            self._full_text = self._indexer.get_full_text(self._config.pdf_path)
+            self._full_text = self._indexer.get_full_text(self._config.doc_path)
         self._searcher = Searcher(
             self._indexer.index,
             rerank_model=self._config.rerank_model_name,
