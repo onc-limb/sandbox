@@ -3,12 +3,12 @@ from __future__ import annotations
 import logging
 
 from src.config import Config
-from src.document_loader import DocumentLoader
+from src.ingestion.document_loader import DocumentLoader
 from src.embeddings import Embedder
-from src.index_loader import load_index as _load_index
-from src.llm_client import LlmClient
-from src.prompt_builder import PromptBuilder
-from src.searcher import Searcher
+from src.retrieval.index_loader import load_index as _load_index
+from src.retrieval.llm_client import LlmClient
+from src.retrieval.prompt_builder import PromptBuilder
+from src.retrieval.searcher import Searcher
 
 logger = logging.getLogger(__name__)
 

@@ -14,10 +14,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.bot import UnifiedBot
+from src.retrieval.bot import UnifiedBot
 from src.config import Config, get_config
-from src.evaluator import Evaluator
 from src.options import LLM_MODELS, SEARCH_METHODS
+from src.eval.evaluator import Evaluator
+from src.eval.criteria import DEFAULT_CRITERIA
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,7 +30,7 @@ MAX_RETRIES = 8
 RETRY_BASE_WAIT = 30  # seconds
 METHOD_WAIT = 60  # seconds between methods
 METHODS = tuple(SEARCH_METHODS)
-CRITERIA = ("relevance", "faithfulness", "completeness", "conciseness")
+CRITERIA = tuple(c.name for c in DEFAULT_CRITERIA)
 
 OUTPUT_DIR = Path("output")
 

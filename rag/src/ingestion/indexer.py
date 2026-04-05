@@ -7,10 +7,10 @@ from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.core.schema import TextNode
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
-from src.chunker import Chunker
+from src.ingestion.chunker import Chunker
 from src.config import Config
 from src.embeddings import Embedder
-from src.document_loader import DocumentLoader
+from src.ingestion.document_loader import DocumentLoader
 
 logger = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@ import sys
 import time
 from pathlib import Path
 
-from src.bot import UnifiedBot
+from src.retrieval.bot import UnifiedBot
 from src.config import get_config
 from src.options import LLM_MODELS, SEARCH_METHODS
 

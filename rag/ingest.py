@@ -7,7 +7,7 @@ import logging
 
 from src.config import Config, get_config
 from src.embeddings import Embedder
-from src.indexer import Indexer
+from src.ingestion.indexer import Indexer
 
 logging.basicConfig(
     level=logging.INFO,

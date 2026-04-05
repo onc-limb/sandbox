@@ -12,4 +12,9 @@ EMBEDDING_MODELS: list[str] = [
     "intfloat/multilingual-e5-large",
 ]
 
+RERANK_MODELS: list[str] = [
+    "BAAI/bge-reranker-v2-m3",
+    "BAAI/bge-reranker-base",
+]
+
 SEARCH_METHODS: list[str] = ["rag", "fulltext", "hybrid"]
