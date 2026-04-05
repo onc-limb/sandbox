@@ -1,0 +1,15 @@
+"""Centralized option definitions for models and search methods."""
+
+LLM_MODELS: list[str] = [
+    "gemini/gemini-3.1-flash-lite-preview",
+    "gemini/gemini-3-flash-preview",
+    "gemini/gemini-2.5-pro",
+]
+
+EMBEDDING_MODELS: list[str] = [
+    "BAAI/bge-m3",
+    "BAAI/bge-large-en-v1.5",
+    "intfloat/multilingual-e5-large",
+]
+
+SEARCH_METHODS: list[str] = ["rag", "fulltext", "hybrid"]

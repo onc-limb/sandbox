@@ -120,6 +120,7 @@ class Evaluator:
             result = _validate_eval_result(raw)
         except (json.JSONDecodeError, ValueError) as e:
             logger.error("Failed to parse evaluation response: %s", e)
+            logger.error("Raw response was: %s", response)
             raise ValueError(f"Failed to parse LLM evaluation response: {e}") from e
 
         logger.debug("Evaluation complete: %s", result)

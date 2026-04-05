@@ -3,8 +3,9 @@ from __future__ import annotations
 import logging
 
 from src.config import Config
+from src.document_loader import DocumentLoader
 from src.embeddings import Embedder
-from src.indexer import Indexer
+from src.index_loader import load_index as _load_index
 from src.llm_client import LlmClient
 from src.prompt_builder import PromptBuilder
 from src.searcher import Searcher
@@ -17,25 +18,27 @@ class UnifiedBot:
         self._config = config
         self._include_full_text = include_full_text
         self._full_text: str = ""
-        embedder = Embedder(config)
-        self._indexer = Indexer(config, embedder)
+        self._embedder = Embedder(config)
         self._searcher: Searcher | None = None
         self._prompt_builder = PromptBuilder()
         self._llm_client = LlmClient(config)
 
-    def build_index(self) -> None:
-        self._indexer.build_index(self._config.doc_path)
+    def load_index(self) -> None:
+        index = _load_index(self._config, self._embedder)
         if self._include_full_text:
-            self._full_text = self._indexer.get_full_text(self._config.doc_path)
+            loader = DocumentLoader()
+            self._full_text = "\n\n".join(
+                doc.page_content for doc in loader.load(self._config.doc_path)
+            )
         self._searcher = Searcher(
-            self._indexer.index,
+            index,
             rerank_model=self._config.rerank_model_name,
             rerank_top_n=self._config.rerank_top_n,
         )
 
     def answer(self, query: str) -> str:
         if self._searcher is None:
-            raise ValueError("build_index() を先に呼んでください")
+            raise ValueError("load_index() を先に呼んでください")
         results = self._searcher.search(query)
         prompt = self._prompt_builder.build(
             query=query,
@@ -51,7 +54,7 @@ class UnifiedBot:
 
     def answer_fulltext_only(self, query: str) -> str:
         if self._searcher is None:
-            raise ValueError("build_index() を先に呼んでください")
+            raise ValueError("load_index() を先に呼んでください")
         if not self._include_full_text:
             raise ValueError("answer_fulltext_only requires include_full_text=True")
         prompt = self._prompt_builder.build(

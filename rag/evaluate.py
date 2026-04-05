@@ -17,6 +17,7 @@ from pathlib import Path
 from src.bot import UnifiedBot
 from src.config import Config, get_config
 from src.evaluator import Evaluator
+from src.options import LLM_MODELS, SEARCH_METHODS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 MAX_RETRIES = 8
 RETRY_BASE_WAIT = 30  # seconds
 METHOD_WAIT = 60  # seconds between methods
-METHODS = ("rag", "fulltext", "hybrid")
+METHODS = tuple(SEARCH_METHODS)
 CRITERIA = ("relevance", "faithfulness", "completeness", "conciseness")
 
 OUTPUT_DIR = Path("output")
@@ -46,6 +47,7 @@ def retry_on_unavailable(func, *args, **kwargs):
                 or "429" in err_str
                 or "ServiceUnavailable" in err_type
                 or "RateLimitError" in err_type
+                or "Failed to parse LLM evaluation response" in err_str
             )
             if is_retryable:
                 wait = RETRY_BASE_WAIT * attempt
@@ -78,18 +80,18 @@ def generate_answer(
     """指定methodで回答を生成し、(answer, context) を返す."""
     if method == "rag":
         bot = UnifiedBot(config, include_full_text=False)
-        bot.build_index()
+        bot.load_index()
         results = bot._searcher.search(question)
         context = "\n\n".join(doc.page_content for doc in results)
         answer = retry_on_unavailable(bot.answer, question)
     elif method == "fulltext":
         bot = UnifiedBot(config, include_full_text=True)
-        bot.build_index()
+        bot.load_index()
         context = bot._full_text
         answer = retry_on_unavailable(bot.answer_fulltext_only, question)
     elif method == "hybrid":
         bot = UnifiedBot(config, include_full_text=True)
-        bot.build_index()
+        bot.load_index()
         results = bot._searcher.search(question)
         context = bot._full_text + "\n\n" + "\n\n".join(
             doc.page_content for doc in results
@@ -155,7 +157,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--method",
         default="all",
-        choices=["rag", "fulltext", "hybrid", "all"],
+        choices=[*SEARCH_METHODS, "all"],
         help="Evaluation method (default: all)",
     )
     parser.add_argument(
@@ -248,7 +250,7 @@ def _interactive_select(args: argparse.Namespace) -> argparse.Namespace:
     if args.model is None:
         args.model = _select(
             "回答生成モデルを選択:",
-            ["gemini/gemini-3-flash-preview", "gemini/gemini-2.5-pro"],
+            LLM_MODELS,
             allow_custom=True,
         )
 

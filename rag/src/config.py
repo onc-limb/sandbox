@@ -25,11 +25,11 @@ class Config:
     """
 
     gemini_api_key: str = field(repr=False, default="")
-    llm_model_name: str = "gemini/gemini-3-flash-preview"
+    llm_model_name: str = "gemini/gemini-3.1-flash-lite-preview"
     embedding_model_name: str = "BAAI/bge-m3"
     chroma_persist_dir: str = str(_PROJECT_ROOT / "chroma_db")
     chroma_collection_name: str = "rag_collection"
-    doc_path: str = str(_PROJECT_ROOT / "docs" / "oreilly-978-4-8144-0138-3e.pdf")
+    doc_path: str = str(_PROJECT_ROOT / "docs" / "bouldering.md")
     rerank_model_name: str = "BAAI/bge-reranker-v2-m3"
     rerank_top_n: int = 4
     index_version: str = "default"

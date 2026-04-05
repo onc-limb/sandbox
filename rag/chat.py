@@ -8,6 +8,7 @@ from pathlib import Path
 
 from src.bot import UnifiedBot
 from src.config import get_config
+from src.options import LLM_MODELS, SEARCH_METHODS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,11 +18,6 @@ logger = logging.getLogger(__name__)
 
 MAX_RETRIES = 8
 RETRY_BASE_WAIT = 30
-
-DEFAULT_MODELS = [
-    "gemini/gemini-3-flash-preview",
-    "gemini/gemini-2.5-pro",
-]
 
 
 def retry_on_unavailable(func, *args, **kwargs):
@@ -56,18 +52,17 @@ def retry_on_unavailable(func, *args, **kwargs):
 def select_method() -> str:
     """対話式で検索方式を選択する."""
     print("\n検索方式を選択してください:")
-    print("1. rag - ベクトル検索のみ")
-    print("2. fulltext - 全文")
-    print("3. hybrid - ハイブリッド（全文+ベクトル検索）")
+    for i, m in enumerate(SEARCH_METHODS, 1):
+        print(f"{i}. {m}")
     while True:
         choice = input("> ").strip()
-        if choice == "1":
-            return "rag"
-        if choice == "2":
-            return "fulltext"
-        if choice == "3":
-            return "hybrid"
-        print("1, 2, 3 のいずれかを入力してください")
+        try:
+            idx = int(choice) - 1
+            if 0 <= idx < len(SEARCH_METHODS):
+                return SEARCH_METHODS[idx]
+        except ValueError:
+            pass
+        print(f"1〜{len(SEARCH_METHODS)} の番号を入力してください")
 
 
 def select_version() -> str:
@@ -101,19 +96,19 @@ def select_version() -> str:
 def select_model() -> str:
     """対話式で LLM モデルを選択する."""
     print("\nLLMモデルを選択してください:")
-    for i, m in enumerate(DEFAULT_MODELS, 1):
+    for i, m in enumerate(LLM_MODELS, 1):
         label = " (default)" if i == 1 else ""
         print(f"{i}. {m}{label}")
-    print(f"{len(DEFAULT_MODELS) + 1}. カスタム入力")
+    print(f"{len(LLM_MODELS) + 1}. カスタム入力")
     while True:
         choice = input("> ").strip()
         if choice == "" or choice == "1":
-            return DEFAULT_MODELS[0]
+            return LLM_MODELS[0]
         try:
             idx = int(choice) - 1
-            if 0 <= idx < len(DEFAULT_MODELS):
-                return DEFAULT_MODELS[idx]
-            if idx == len(DEFAULT_MODELS):
+            if 0 <= idx < len(LLM_MODELS):
+                return LLM_MODELS[idx]
+            if idx == len(LLM_MODELS):
                 custom = input("モデル名を入力: ").strip()
                 if custom:
                     return custom
@@ -121,7 +116,7 @@ def select_model() -> str:
                 continue
         except ValueError:
             pass
-        print(f"1〜{len(DEFAULT_MODELS) + 1} の番号を入力してください")
+        print(f"1〜{len(LLM_MODELS) + 1} の番号を入力してください")
 
 
 def parse_args() -> argparse.Namespace:
@@ -158,8 +153,8 @@ def main() -> None:
     include_full_text = method in ("fulltext", "hybrid")
     bot = UnifiedBot(config, include_full_text=include_full_text)
 
-    print("\nインデックスを構築中...")
-    bot.build_index()
+    print("\nインデックスをロード中...")
+    bot.load_index()
 
     print("\n=== RAG Chat ===")
     print(f"モデル: {model}")
