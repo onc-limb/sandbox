@@ -17,4 +17,4 @@ RERANK_MODELS: list[str] = [
     "BAAI/bge-reranker-base",
 ]
 
-SEARCH_METHODS: list[str] = ["rag", "fulltext", "hybrid"]
+SEARCH_METHODS: list[str] = ["rag", "fulltext", "hybrid", "agentic"]
