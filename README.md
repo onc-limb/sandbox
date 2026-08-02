@@ -8,9 +8,11 @@
 
 ## ディレクトリ構成
 
+- `elixir/` — Elixir の言語学習（バッチ処理 3 題材）
 - `next-app/` — Next.js の試用
 - `on-react/` — React の試用
 - `rag/` — RAG（LlamaIndex 等）の試用
+- `rust/` — Rust の言語学習（バッチ処理 3 題材、進め方は同ディレクトリの README）
 - `specs/` — 試用時に使い回す共通仕様の置き場
 
 ## 共通仕様
