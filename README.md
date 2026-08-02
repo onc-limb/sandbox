@@ -19,3 +19,5 @@
 
 - [フレームワーク試用のための固定題材 仕様書](specs/framework-trial-subjects.md)
   — RealWorld＋拡張 / 予約カレンダー / リアルタイムクイズ の 3 題材と評価チェックリスト
+- [Elixir/Rust 言語学習のための固定題材 仕様書（バッチ処理編）](specs/elixir-rust-batch-subjects.md)
+  — 単語頻度カウント / 並行データ収集 / 大量ログのストリームETL の 3 題材と評価チェックリスト

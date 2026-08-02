@@ -1,0 +1,22 @@
+Elixir is a functional, concurrent, general-purpose programming language that runs on the Erlang virtual machine.
+Elixir builds on top of Erlang and shares the same abstractions for building distributed, fault-tolerant applications.
+Elixir is also a compiled language that leverages the Erlang VM known for running low-latency, distributed, and fault-tolerant systems.
+
+The language draws inspiration from Ruby for its syntax, but the semantics are quite different from object-oriented languages.
+Elixir is dynamically typed, but you can use optional typespecs to document and check function signatures.
+
+Pattern matching is a core feature of Elixir, and it is used everywhere in the language.
+The pipe operator lets you chain function calls together, making data transformation pipelines easy to read.
+Processes in Elixir are extremely lightweight in terms of memory and CPU, even compared to threads used in many other programming languages.
+
+It is not uncommon to have hundreds of thousands of processes running concurrently on the same machine.
+The Erlang VM, called BEAM, was designed to support a highly concurrent and fault-tolerant environment.
+Supervisors provide a way to build applications that can heal themselves in case something unexpected happens.
+
+Elixir and Erlang share the same bytecode and data types, and both run on the same virtual machine.
+Many companies use Elixir in production for web applications, real-time systems, and data processing pipelines.
+The Elixir community values simplicity, explicitness, and productivity.
+
+Learning Elixir means learning to think in terms of processes, messages, and pattern matching rather than mutable state.
+Once you get comfortable with the pipe operator and pattern matching, writing Elixir code starts to feel natural.
+The mix build tool makes it easy to create projects, manage dependencies, run tests, and compile releases.
